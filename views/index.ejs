@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, user-scalable=no">
+        <title>Socket.IO chat</title>
+
+        <link rel='stylesheet' href='/stylesheets/style.css' />
+
+        <script src="//cdn.socket.io/socket.io-1.4.5.js?201701191503"></script>
+        <script src="//code.jquery.com/jquery-1.11.1.js?201701191503"></script>
+
+        <script>
+
+            var oParams = getUrlParams();
+
+            var socket = io('//io.hostname.com', {secure: true, query: {deviceId: 'ikchoi', secretKey: '1111'}});
+
+            socket.on('connect', function () {
+                console.log(socket.io.engine.id);
+
+                //로그인시 uid를 넘긴다.
+                socket.emit('login', { deviceId: oParams.id });
+            });
+
+
+            /**
+             * 브로드캐스트 전송
+             */
+            function broadcast_emit() {
+                socket.emit('broadcast', "브로드캐스트 메시지");
+            }
+
+            /**
+             * 특정 사용자에게 메시지 전송
+             */
+            function user_emit() {
+                var deviceId = $('#usr').val();
+                socket.emit('message special user', { deviceId: deviceId, msg: deviceId +' 에게만 보내는 메시지입니다.' });
+            }
+
+            /**
+             * 메시지 수신
+             */
+            socket.on('chat message', function(msg){
+                $('#messages').append($('<li>').text(msg));
+            });
+
+            //Deprecated
+            // 서버측에서 socket.send(msg); 한것을 받아 실행
+            socket.on('message', function (msg) {
+                $('#messages').append($('<li>').text(msg));
+            });
+
+
+
+            /**
+             * 메시지 전송
+             * @returns {boolean}
+             */
+            function socket_emit() {
+
+                if($('#m').val() == '') {
+                    alert('메시지를 입력하세요.');
+                    return (false);
+                }
+
+                console.log(oParams.id);
+                socket.emit('chat message', { deviceId: oParams.id, msg: $('#m').val()});
+                //console.log($('#m').val());
+                $('#m').val('');
+                return (false);
+            }
+
+
+
+            $(function() {
+
+                /**
+                 * 엔터키 타자시 전송
+                 */
+                $("#m").keypress(function(event){
+
+                    if(event.keyCode == 13){
+                        socket_emit();
+                    }
+                });
+            });
+
+
+            function getUrlParams() {
+                var params = {};
+                window.location.search.replace(/[?&]+([^=&]+)=([^&]*)/gi, function(str, key, value) { params[key] = value; });
+                return params;
+            }
+
+
+        </script>
+
+
+        <style>
+            * { margin: 0; padding: 5px; box-sizing: border-box; }
+            form { background: #000; padding: 1px; position: fixed; bottom: 0; width: 100%; }
+            form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
+            form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
+            #messages { list-style-type: none; margin: 0; padding: 0; }
+            #messages li { padding: 5px 10px; }
+            #messages li:nth-child(odd) { background: #eee; }
+        </style>
+
+    </head>
+    <body>
+        <ul id="messages"></ul>
+
+        <input id="m" autocomplete="off" />
+        <button type="button" onclick="socket_emit();">전송하기</button>
+
+        <br/>
+        <br/>
+        <input type="text" id="usr" />
+        <button type="button" onclick="user_emit();"> 1 : 1 전송 </button>
+
+        <br/>
+        <br/>
+
+        <button type="button" onclick="broadcast_emit();">브로드캐스트 전송</button>
+
+
+        <br/>
+        <%= options.title%>
+        <%
+            rows.forEach(function(row) {
+                console.log(row.TITLE);
+            });
+
+        %>
+    </body>
+</html>
