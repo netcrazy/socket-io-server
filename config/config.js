@@ -5,8 +5,9 @@ module.exports = {
      * @type {{host: string, port: number}}
      */
     redis_cfg: {
-        host: "redis.hostname",
-        port: 6379
+        host: "10.211.55.3",
+        port: 6379,
+        db: 1
     },
 
     /**
@@ -16,10 +17,10 @@ module.exports = {
     mysql_cfg: {
         connectionLimit: 100,
         waitForConnections: false,
-        host: 'db.hostname',
-        user: 'username',
-        password: 'password',
-        database: 'databasename'
+        host: '10.211.55.3',
+        user: 'root',
+        password: 'root',
+        database: 'testdb'
     },
 
     /**

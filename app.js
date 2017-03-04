@@ -19,15 +19,26 @@ app.io = require('socket.io')();
  * @type {*|Object}
  */
 var ioRedis = require('socket.io-redis');
-app.io.adapter(ioRedis({ host: config.redis_cfg.host, port: config.redis_cfg.port }));
-
+app.io.adapter(
+    ioRedis({
+        host: config.redis_cfg.host,
+        port: config.redis_cfg.port
+    })
+);
 
 /**
- * redis 클라이언트 (접속자 정보 기록용)
+ * redis 클라이언트 (접속자 세션정보 기록용)
  * @type {exports|module.exports}
  */
 var redis = require('redis');
-var redisClient = redis.createClient(config.redis_cfg.port, config.redis_cfg.host);
+var redisClient = redis.createClient(
+    config.redis_cfg.port,
+    config.redis_cfg.host,
+    {
+        db: config.redis_cfg.db
+    }
+);
+
 app.cache = redisClient;
 
 // view engine setup
