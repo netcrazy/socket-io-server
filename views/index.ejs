@@ -13,7 +13,7 @@
 
             var oParams = getUrlParams();
 
-            var socket = io('//io.hostname.com', {secure: true, query: {deviceId: 'ikchoi', secretKey: '1111'}});
+            var socket = io('//127.0.0.1:3000', {secure: true, query: {deviceId: 'ikchoi', secretKey: '1111'}});
 
             socket.on('connect', function () {
                 console.log(socket.io.engine.id);
