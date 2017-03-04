@@ -7,7 +7,7 @@ module.exports = {
     redis_cfg: {
         host: "10.211.55.3",
         port: 6379,
-        db: 1
+        db: 0
     },
 
     /**
